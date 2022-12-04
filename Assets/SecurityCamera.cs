@@ -3,18 +3,22 @@ using UnityEngine;
 public class SecurityCamera : MonoBehaviour
 {
     public float speed = 0.1f;
-    public float fromY;
-    public float toY;
-    public float zPitch;
+    public float fromRot;
+    public float toRot;
+    public float pitch;
     Quaternion from;
     Quaternion to;
     bool playerInView;
     float timePlayerIsInView;
+    float totalTimePlayerIsInView;
+    public Light indicatorLight;
+    public GameObject indicator;
 
     void Start()
     {
-        from = Quaternion.Euler(0, fromY, zPitch);
-        to = Quaternion.Euler(0, toY, zPitch);
+        from = Quaternion.Euler(pitch, fromRot, 90);
+        to = Quaternion.Euler(pitch, toRot, 90);
+        indicator.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
     }
 
     // Update is called once per frame
@@ -22,12 +26,12 @@ public class SecurityCamera : MonoBehaviour
     {
         if (!playerInView)
         {
-            float lerp = 0.5f * (1.0f + Mathf.Sin(Mathf.PI * Time.realtimeSinceStartup * speed));
-            transform.localRotation = Quaternion.Lerp(from, to, lerp);
+            transform.rotation = Quaternion.Lerp(from, to, Mathf.PingPong((Time.time - totalTimePlayerIsInView) * speed, 1));
         }
         else
         {
             timePlayerIsInView += Time.deltaTime;
+            totalTimePlayerIsInView += Time.deltaTime;
             if (timePlayerIsInView > 1f)
             {
                 CatchPlayer();
@@ -40,6 +44,8 @@ public class SecurityCamera : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             playerInView = true;
+            indicatorLight.color = Color.red;
+            indicator.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.red);
         }
     }
     private void OnTriggerExit(Collider other)
@@ -48,6 +54,8 @@ public class SecurityCamera : MonoBehaviour
         {
             playerInView = false;
             timePlayerIsInView = 0;
+            indicatorLight.color = Color.green;
+            indicator.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.green);
         }
     }
 
