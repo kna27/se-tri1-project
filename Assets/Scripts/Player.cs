@@ -17,21 +17,25 @@ public class Player : MonoBehaviour
     float yRotation;
     float mouseX;
     float mouseY;
-
+    Outline[] outlineObjs;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        outlineObjs = FindObjectsOfType<Outline>();
     }
 
     void Update()
     {
-        // raycast from center of screen
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         if (Physics.Raycast(ray, out RaycastHit hit, Interactable.maxInteractRange))
         {
+            if(hit.collider.GetComponent<Outline>())
+            {
+                hit.collider.GetComponent<Outline>().OutlineColor = Color.green;
+            }
             Interactable interactable = hit.collider.gameObject.GetComponent<Interactable>();
             if (interactable)
             {
@@ -55,6 +59,10 @@ public class Player : MonoBehaviour
             }
             else
             {
+                foreach (Outline outlineObj in outlineObjs)
+                {
+                    outlineObj.OutlineColor = Color.white;
+                }
                 interactKeyHeldTime = 0;
                 if(interactable)
                 {
@@ -68,6 +76,10 @@ public class Player : MonoBehaviour
         }
         else
         {
+            foreach (Outline outlineObj in outlineObjs)
+            {
+                outlineObj.OutlineColor = Color.white;
+            }
             interactKeyHeldTime = 0;
             if (GameObject.Find("Canvas/Interact Panel"))
             {
