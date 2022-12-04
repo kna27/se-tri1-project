@@ -55,7 +55,7 @@ public class SecurityCamera : MonoBehaviour
     {
         Debug.Log("caught player");
         timePlayerIsInView = 0f;
-        GameObject.Find("GameManager").GetComponent<GameManager>().ChangeWantedness(100);
+        GameObject.Find("GameManager").GetComponent<GameManager>().ChangeWantedness(10);
     }
 
 }

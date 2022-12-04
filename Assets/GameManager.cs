@@ -6,29 +6,56 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public enum GameState
+    {
+        Playing,
+        Paused,
+        Over
+    };
     float wantedness;
     int score;
     public float wantednessDecayScale;
-    bool gameOver;
     public Image fadePanel;
     public Slider wantednessSlider;
     public TextMeshProUGUI scoreText;
+    public static GameState currentGameState;
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
-        gameOver = true;
-        StartCoroutine(FadeOutGame());
+        currentGameState = GameState.Playing;
     }
-
-    // Update is called once per frame
     void Update()
     {
         ChangeWantedness(wantednessDecayScale * Time.deltaTime);
-        if (gameOver)
+        if (currentGameState == GameState.Over)
         {
-            gameOver = true;
             StartCoroutine(FadeOutGame());
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (currentGameState == GameState.Paused)
+            {
+                currentGameState = wantedness == 100f ? GameState.Over : GameState.Playing;
+            }
+            else
+            {
+                currentGameState = GameState.Paused;
+            }
+            PauseGame();
+        }
+    }
+
+    void PauseGame()
+    {
+        if (currentGameState == GameState.Paused)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
         }
     }
 
@@ -42,12 +69,15 @@ public class GameManager : MonoBehaviour
     {
         wantedness = Mathf.Clamp(wantedness + changeAmount, 0, 100f);
         wantednessSlider.value = wantedness;
-        gameOver = wantedness == 100f;
+        if (wantedness == 100f)
+        {
+            currentGameState = GameState.Over;
+        };
     }
 
     IEnumerator FadeOutGame()
     {
-        while ((fadePanel.color.a < 1) || (gameOver == true))
+        while ((fadePanel.color.a < 1) || (currentGameState == GameState.Over))
         {
             fadePanel.color = Color.Lerp(fadePanel.color, new Color(0, 0, 0, 1), 0.75f * Time.deltaTime);
             if (fadePanel.color.a > 0.99)
