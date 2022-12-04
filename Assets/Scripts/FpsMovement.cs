@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FpsMovement : MonoBehaviour
 {
-    public float speed;
-
-    public Transform orientation;
+    [SerializeField] private float speed;
+    [SerializeField] private Transform orientation;
     float horizontalInput;
     float verticalInput;
     Vector3 moveDir;

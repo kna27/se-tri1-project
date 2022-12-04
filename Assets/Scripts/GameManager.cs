@@ -1,38 +1,33 @@
 using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public enum GameState
+    enum GameState
     {
         Playing,
         Paused,
         Over
     };
+    [SerializeField] private Image fadePanel;
+    [SerializeField] private Slider wantednessSlider;
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private float wantednessDecayScale;
+    [SerializeField] private float gameFadeoutTime;
+    static GameState currentGameState;
     float wantedness;
     int score;
-    public float wantednessDecayScale;
-    public Image fadePanel;
-    public Slider wantednessSlider;
-    public TextMeshProUGUI scoreText;
-    public static GameState currentGameState;
-
 
     private void Start()
     {
         currentGameState = GameState.Playing;
     }
+
     void Update()
     {
-        ChangeWantedness(wantednessDecayScale * Time.deltaTime);
-        if (currentGameState == GameState.Over)
-        {
-            StartCoroutine(FadeOutGame());
-        }
-
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (currentGameState == GameState.Paused)
@@ -45,6 +40,11 @@ public class GameManager : MonoBehaviour
             }
             PauseGame();
         }
+        ChangeWantedness(wantednessDecayScale * Time.deltaTime);
+        if (currentGameState == GameState.Over)
+        {
+            StartCoroutine(FadeOutGame());
+        }
     }
 
     void PauseGame()
@@ -52,10 +52,14 @@ public class GameManager : MonoBehaviour
         if (currentGameState == GameState.Paused)
         {
             Time.timeScale = 0;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         else
         {
             Time.timeScale = 1;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 
@@ -77,16 +81,17 @@ public class GameManager : MonoBehaviour
 
     IEnumerator FadeOutGame()
     {
-        while ((fadePanel.color.a < 1) || (currentGameState == GameState.Over))
+        while (fadePanel.color.a < 1)
         {
-            fadePanel.color = Color.Lerp(fadePanel.color, new Color(0, 0, 0, 1), 0.75f * Time.deltaTime);
+            fadePanel.color = Color.Lerp(fadePanel.color, new Color(0, 0, 0, 1), gameFadeoutTime * Time.deltaTime);
+            // Load next scene when faded out
             if (fadePanel.color.a > 0.99)
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             }
             yield return null;
         }
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(gameFadeoutTime);
 
     }
 }
