@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         currentGameState = GameState.Playing;
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         pauseMenu.SetActive(false);
     }
 

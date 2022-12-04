@@ -1,8 +1,9 @@
 using TMPro;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class Interactable : MonoBehaviour
 {
+    public Slider interactProgress;
     public string interactText;
     public float interactTime;
     public static float maxInteractRange = 4f;

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -34,10 +35,12 @@ public class Player : MonoBehaviour
             Interactable interactable = hit.collider.gameObject.GetComponent<Interactable>();
             if (interactable)
             {
+                interactable.interactProgress.maxValue = interactable.interactTime;
                 interactable.ShowInteractText();
                 if (Input.GetKey(KeyCode.E))
                 {
                     interactKeyHeldTime += Time.deltaTime;
+                    interactable.interactProgress.value = interactKeyHeldTime;
                     if (interactKeyHeldTime >= interactable.interactTime)
                     {
                         interactable.Interact();
@@ -47,11 +50,28 @@ public class Player : MonoBehaviour
                 else
                 {
                     interactKeyHeldTime = 0;
+                    interactable.interactProgress.value = 0;
                 }
             }
             else
             {
-                //GameObject.Find("Interact Panel").SetActive(false);
+                interactKeyHeldTime = 0;
+                if(interactable)
+                {
+                    interactable.interactProgress.value = 0;
+                }
+                if (GameObject.Find("Canvas/Interact Panel"))
+                {
+                    GameObject.Find("Canvas/Interact Panel").SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            interactKeyHeldTime = 0;
+            if (GameObject.Find("Canvas/Interact Panel"))
+            {
+                GameObject.Find("Canvas/Interact Panel").SetActive(false);
             }
         }
 
