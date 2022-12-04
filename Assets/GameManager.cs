@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -10,6 +9,7 @@ public class GameManager : MonoBehaviour
     float wantedness;
     int score;
     public float wantednessDecayScale;
+    bool gameOver;
     public Image fadePanel;
     public Slider wantednessSlider;
     public TextMeshProUGUI scoreText;
@@ -17,13 +17,19 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        gameOver = true;
+        StartCoroutine(FadeOutGame());
     }
 
     // Update is called once per frame
     void Update()
     {
         ChangeWantedness(wantednessDecayScale * Time.deltaTime);
+        if (gameOver)
+        {
+            gameOver = true;
+            StartCoroutine(FadeOutGame());
+        }
     }
 
     public void AddScore(int scoreToAdd)
@@ -36,28 +42,21 @@ public class GameManager : MonoBehaviour
     {
         wantedness = Mathf.Clamp(wantedness + changeAmount, 0, 100f);
         wantednessSlider.value = wantedness;
-        if (wantedness == 100f)
-        {
-            EndGame();
-        }
-    }
-
-    void EndGame()
-    {
-        StartCoroutine(FadeOutGame());
+        gameOver = wantedness == 100f;
     }
 
     IEnumerator FadeOutGame()
     {
-        for (float fade = 0f; fade <= 1; fade += 0.05f)
+        while ((fadePanel.color.a < 1) || (gameOver == true))
         {
-            Color c = fadePanel.color;
-            c.a = fade;
-            fadePanel.color = c;
-            Time.timeScale = 1 - fade;
-            yield return new WaitForSeconds(.1f);
+            fadePanel.color = Color.Lerp(fadePanel.color, new Color(0, 0, 0, 1), 0.75f * Time.deltaTime);
+            if (fadePanel.color.a > 0.99)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            }
+            yield return null;
         }
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-        yield return null;
+        yield return new WaitForSeconds(0.75f);
+
     }
 }
