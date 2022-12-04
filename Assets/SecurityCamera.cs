@@ -27,6 +27,7 @@ public class SecurityCamera : MonoBehaviour
         if (!playerInView)
         {
             transform.rotation = Quaternion.Lerp(from, to, Mathf.PingPong((Time.time - totalTimePlayerIsInView) * speed, 1));
+            UpdateIndicatorColor(Color.green);
         }
         else
         {
@@ -36,6 +37,7 @@ public class SecurityCamera : MonoBehaviour
             {
                 CatchPlayer();
             }
+            UpdateIndicatorColor(Color.red);
         }
     }
 
@@ -44,8 +46,6 @@ public class SecurityCamera : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             playerInView = true;
-            indicatorLight.color = Color.red;
-            indicator.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.red);
         }
     }
     private void OnTriggerExit(Collider other)
@@ -54,9 +54,13 @@ public class SecurityCamera : MonoBehaviour
         {
             playerInView = false;
             timePlayerIsInView = 0;
-            indicatorLight.color = Color.green;
-            indicator.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.green);
         }
+    }
+
+    void UpdateIndicatorColor(Color color)
+    {
+        indicatorLight.color = color;
+        indicator.GetComponent<Renderer>().material.SetColor("_EmissionColor", color);
     }
 
     void CatchPlayer()
