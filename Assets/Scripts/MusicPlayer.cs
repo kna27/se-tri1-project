@@ -1,38 +1,56 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MusicPlayer : MonoBehaviour
 {
 #nullable enable
-    [SerializeField] private Slider? volumeSlider;
+    private Slider? volumeSlider;
 #nullable disable
     private AudioSource audioSource;
     private float volume = 1f;
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-    }
-
-    void Start()
-    {
-        audioSource = GetComponent<AudioSource>();
-        volume = PlayerPrefs.GetFloat("volume", 1f);
-        audioSource.volume = volume;
-        if (volumeSlider != null)
+        if (FindObjectsOfType<MusicPlayer>().Length > 1)
         {
-            volumeSlider.value = volume;
+            Destroy(gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += delegate { OnSceneLoaded(); };
         }
     }
 
     void Update()
     {
         audioSource.volume = volume;
-        PlayerPrefs.SetFloat("volume", volume);
+
     }
 
-    public void UpdateVolume(float vol)
+    void OnSceneLoaded()
     {
-        volume = vol;
+        audioSource = GetComponent<AudioSource>();
+        volume = PlayerPrefs.GetFloat("volume", 1f);
+        audioSource.volume = volume;
+        if (GameObject.Find("Volume"))
+        {
+            volumeSlider = GameObject.Find("Volume").GetComponent<Slider>();
+            volumeSlider.value = volume;
+            volumeSlider.onValueChanged.RemoveAllListeners();
+            volumeSlider.onValueChanged.AddListener(delegate { UpdateVolume(volumeSlider); });
+        }
+        else
+        {
+            volumeSlider = null;
+        }
+    }
+
+    public void UpdateVolume(Slider slider)
+    {
+        volume = slider.value;
+        audioSource.volume = slider.value;
+        PlayerPrefs.SetFloat("volume", volume);
     }
 }

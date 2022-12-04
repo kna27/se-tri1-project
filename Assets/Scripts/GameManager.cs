@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
         Over
     };
     [SerializeField] private Image fadePanel;
+    [SerializeField] private GameObject pauseMenu;
     [SerializeField] private Slider wantednessSlider;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private float wantednessDecayScale;
@@ -24,20 +25,13 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         currentGameState = GameState.Playing;
+        pauseMenu.SetActive(false);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (currentGameState == GameState.Paused)
-            {
-                currentGameState = wantedness == 100f ? GameState.Over : GameState.Playing;
-            }
-            else
-            {
-                currentGameState = GameState.Paused;
-            }
             PauseGame();
         }
         ChangeWantedness(wantednessDecayScale * Time.deltaTime);
@@ -47,19 +41,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void PauseGame()
+    public void PauseGame()
     {
         if (currentGameState == GameState.Paused)
         {
+            currentGameState = wantedness == 100f ? GameState.Over : GameState.Playing;
+        }
+        else
+        {
+            currentGameState = GameState.Paused;
+        }
+        if (currentGameState == GameState.Paused)
+        {
             Time.timeScale = 0;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            pauseMenu.SetActive(true);
         }
         else
         {
             Time.timeScale = 1;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            pauseMenu.SetActive(false);
         }
     }
 
