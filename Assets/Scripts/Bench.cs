@@ -27,22 +27,21 @@ public class Bench : Interactable
     {
         oldPlayerPos = player.transform;
         player.transform.SetParent(playerAnchor);
+        player.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.Euler(Vector3.zero));
         player.GetComponent<Player>().movementEnabled = false;
+        player.GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Collider>().enabled = false;
-        player.transform.SetPositionAndRotation(Vector3.zero, Quaternion.Euler(Vector3.zero));
         StartCoroutine(BenchAnim());
     }
 
     IEnumerator BenchAnim()
     {
         yield return new WaitForSeconds(1 + currentWeight * 1.5f);
-        Debug.Log("2: " + oldPlayerPos.position + " | " + player.transform.position);
         GameObject.Find("GameManager").GetComponent<GameManager>().AddScore(45 + currentWeight * 90);
         player.transform.SetParent(null);
         player.transform.SetPositionAndRotation(oldPlayerPos.position, oldPlayerPos.rotation);
-        Debug.Log("3: " + oldPlayerPos.position + " | " + player.transform.position);
+        player.GetComponent<Rigidbody>().isKinematic = false;
         player.GetComponent<Player>().movementEnabled = true;
         GetComponent<Collider>().enabled = true;
-        Debug.Log("4: " + oldPlayerPos.position + " | " + player.transform.position);
     }
 }
