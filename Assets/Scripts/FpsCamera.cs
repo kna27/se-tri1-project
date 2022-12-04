@@ -15,7 +15,7 @@ public class FpsCamera : MonoBehaviour
         Cursor.visible = false;
     }
 
-    void Update()
+    public void UpdateCam()
     {
         mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensitivity;
         mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensitivity;
