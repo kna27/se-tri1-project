@@ -1,13 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class FpsCam : MonoBehaviour
+public class FpsCamera : MonoBehaviour
 {
-    public float sensitivity;
-    public Transform orientation;
+    [SerializeField] private float sensitivity;
+    [SerializeField] private Transform orientation;
     float xRotation;
     float yRotation;
+    float mouseX;
+    float mouseY;
 
     void Start()
     {
@@ -17,8 +17,8 @@ public class FpsCam : MonoBehaviour
 
     void Update()
     {
-        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensitivity;
-        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensitivity;
+        mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensitivity;
+        mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensitivity;
         yRotation += mouseX;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
