@@ -50,9 +50,12 @@ public class SecurityCamera : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (Physics.Raycast(transform.position, other.transform.position - transform.position, out _))
+            if (Physics.Raycast(transform.position, other.transform.position - transform.position, out RaycastHit hit))
             {
-                playerInView = true;
+                if (hit.transform.gameObject.CompareTag("Player"))
+                {
+                    playerInView = true;
+                }
             }
         }
     }

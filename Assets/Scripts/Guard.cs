@@ -48,11 +48,14 @@ public class Guard : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             // check if raycast from guard to player hits player
-            if (Physics.Raycast(transform.position, player.transform.position - transform.position, out _))
+            if (Physics.Raycast(transform.position, player.transform.position - transform.position, out RaycastHit hit))
             {
-                playerInView = true;
-                nav.stoppingDistance = 2f;
-                nav.destination = player.transform.position;
+                if (hit.transform.gameObject.CompareTag("Player"))
+                {
+                    playerInView = true;
+                    nav.stoppingDistance = 2f;
+                    nav.destination = player.transform.position;
+                }
             }
         }
     }
