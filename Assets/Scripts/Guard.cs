@@ -6,11 +6,7 @@ public class Guard : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private Transform currentTarget;
     [SerializeField] private Transform[] targets;
-    [SerializeField] private static float timeToCatchPlayer = 1f; // Time player must be in view to be caught
-    [SerializeField] private static int wantednessIncrease = 20; // Amount to increase wantedness when player is caught
-    private bool playerInView;
-    private float timePlayerIsInView;
-    private float totalTimePlayerIsInView;
+    [SerializeField] private Enemy enemy;
     NavMeshAgent nav;
     int targetIndex;
 
@@ -31,14 +27,14 @@ public class Guard : MonoBehaviour
             targetIndex = targetIndex < targets.Length - 1 ? targetIndex + 1 : 0;
             nav.destination = targets[targetIndex].position;
         }
-        if (playerInView)
+        if (enemy.playerInView)
         {
-            timePlayerIsInView += Time.deltaTime;
-            totalTimePlayerIsInView += Time.deltaTime;
-            if (timePlayerIsInView > timeToCatchPlayer)
+            enemy.timePlayerIsInView += Time.deltaTime;
+            enemy.totalTimePlayerIsInView += Time.deltaTime;
+            if (enemy.timePlayerIsInView > enemy.timeToCatchPlayer)
             {
-                timePlayerIsInView = 0f;
-                GameObject.Find("GameManager").GetComponent<GameManager>().ChangeWantedness(wantednessIncrease);
+                enemy.timePlayerIsInView = 0f;
+                GameObject.Find("GameManager").GetComponent<GameManager>().ChangeWantedness(enemy.wantednessIncrease);
             }
         }
     }
@@ -52,7 +48,7 @@ public class Guard : MonoBehaviour
             {
                 if (hit.transform.gameObject.CompareTag("Player"))
                 {
-                    playerInView = true;
+                    enemy.playerInView = true;
                     nav.stoppingDistance = 2f;
                     nav.destination = player.transform.position;
                 }
@@ -63,8 +59,8 @@ public class Guard : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            playerInView = false;
-            timePlayerIsInView = 0;
+            enemy.playerInView = false;
+            enemy.timePlayerIsInView = 0;
             nav.stoppingDistance = 0f;
             nav.destination = targets[targetIndex].position;
         }

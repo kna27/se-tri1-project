@@ -6,18 +6,13 @@ public class SecurityCamera : MonoBehaviour
     [SerializeField] private GameObject indicator;
     [SerializeField] private Color playerInViewColor = Color.red;
     [SerializeField] private Color playerNotInViewColor = Color.green;
-    [SerializeField] private static float timeToCatchPlayer = 1f; // Time player must be in view to be caught
-    [SerializeField] private static int wantednessIncrease = 10; // Amount to increase wantedness when player is caught
+    [SerializeField] private Enemy enemy;
     [SerializeField] private float speed = 0.1f; // The speed the camera rotates
     [SerializeField] private float fromRot; // The minimum rotation of the camera in degrees
     [SerializeField] private float toRot; // The maximum rotation of the camera in degrees
     [SerializeField] private float pitch; // The amount to pitch the camera up or down
-
     Quaternion from;
     Quaternion to;
-    private bool playerInView;
-    private float timePlayerIsInView;
-    private float totalTimePlayerIsInView;
 
     void Start()
     {
@@ -28,11 +23,11 @@ public class SecurityCamera : MonoBehaviour
 
     void Update()
     {
-        if (playerInView)
+        if (enemy.playerInView)
         {
-            timePlayerIsInView += Time.deltaTime;
-            totalTimePlayerIsInView += Time.deltaTime;
-            if (timePlayerIsInView > timeToCatchPlayer)
+            enemy.timePlayerIsInView += Time.deltaTime;
+            enemy.totalTimePlayerIsInView += Time.deltaTime;
+            if (enemy.timePlayerIsInView > enemy.timeToCatchPlayer)
             {
                 CatchPlayer();
             }
@@ -41,7 +36,7 @@ public class SecurityCamera : MonoBehaviour
         else
         {
             // Only rotate camera if player is not in view
-            transform.rotation = Quaternion.Lerp(from, to, Mathf.PingPong((Time.time - totalTimePlayerIsInView) * speed, 1));
+            transform.rotation = Quaternion.Lerp(from, to, Mathf.PingPong((Time.time - enemy.totalTimePlayerIsInView) * speed, 1));
             UpdateIndicatorColor(playerNotInViewColor);
         }
     }
@@ -54,7 +49,7 @@ public class SecurityCamera : MonoBehaviour
             {
                 if (hit.transform.gameObject.CompareTag("Player"))
                 {
-                    playerInView = true;
+                    enemy.playerInView = true;
                 }
             }
         }
@@ -63,8 +58,8 @@ public class SecurityCamera : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            playerInView = false;
-            timePlayerIsInView = 0;
+            enemy.playerInView = false;
+            enemy.timePlayerIsInView = 0;
         }
     }
 
@@ -76,7 +71,7 @@ public class SecurityCamera : MonoBehaviour
 
     void CatchPlayer()
     {
-        timePlayerIsInView = 0f;
-        GameObject.Find("GameManager").GetComponent<GameManager>().ChangeWantedness(wantednessIncrease);
+        enemy.timePlayerIsInView = 0f;
+        GameObject.Find("GameManager").GetComponent<GameManager>().ChangeWantedness(enemy.wantednessIncrease);
     }
 }
