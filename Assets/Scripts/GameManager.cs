@@ -10,12 +10,17 @@ public class GameManager : MonoBehaviour
     {
         Playing,
         Paused,
-        Over
+        Won,
+        Caught
     };
     [SerializeField] private Image fadePanel;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private Slider wantednessSlider;
     [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private TextMeshProUGUI gameOverState;
+    [SerializeField] private TextMeshProUGUI gameOverTip;
+    [SerializeField] private TextMeshProUGUI gameOverScore;
     [SerializeField] private float wantednessDecayScale;
     [SerializeField] private float gameFadeoutTime;
     static GameState currentGameState;
@@ -24,6 +29,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        gameOverPanel.SetActive(false);
         currentGameState = GameState.Playing;
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
@@ -38,7 +44,7 @@ public class GameManager : MonoBehaviour
             PauseGame();
         }
         ChangeWantedness(wantednessDecayScale * Time.deltaTime);
-        if (currentGameState == GameState.Over)
+        if (currentGameState == GameState.Caught)
         {
             StartCoroutine(FadeOutGame());
         }
@@ -48,9 +54,9 @@ public class GameManager : MonoBehaviour
     {
         if (currentGameState == GameState.Paused)
         {
-            currentGameState = wantedness == 100f ? GameState.Over : GameState.Playing;
+            currentGameState = wantedness == 100f ? GameState.Caught : GameState.Playing;
         }
-        else
+        else if(currentGameState != GameState.Caught || currentGameState != GameState.Won)
         {
             currentGameState = GameState.Paused;
         }
@@ -82,7 +88,7 @@ public class GameManager : MonoBehaviour
         wantednessSlider.value = wantedness;
         if (wantedness == 100f)
         {
-            currentGameState = GameState.Over;
+            currentGameState = GameState.Caught;
         };
     }
 
@@ -91,10 +97,17 @@ public class GameManager : MonoBehaviour
         while (fadePanel.color.a < 1)
         {
             fadePanel.color = Color.Lerp(fadePanel.color, new Color(0, 0, 0, 1), gameFadeoutTime * Time.deltaTime);
-            // Load next scene when faded out
-            if (fadePanel.color.a > 0.99)
+            if (fadePanel.color.a > 0.99 && (currentGameState == GameState.Caught || currentGameState == GameState.Won))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+                Time.timeScale = 0f;
+                gameOverPanel.SetActive(true);
+                gameOverState.text = currentGameState == GameState.Caught ? "You Got Caught!" : "You Won!";
+                gameOverTip.text = currentGameState == GameState.Caught ? "Try staying out out of sight of cameras and the guard" : "Try going for more risky plays to increase your score";
+                gameOverScore.gameObject.SetActive(currentGameState == GameState.Won);
+                gameOverScore.text = "Score: " + score.ToString();
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                pauseMenu.SetActive(true);
             }
             yield return null;
         }
