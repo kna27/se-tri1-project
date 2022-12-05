@@ -12,6 +12,7 @@ public class SecurityCamera : MonoBehaviour
     [SerializeField] private float fromRot; // The minimum rotation of the camera in degrees
     [SerializeField] private float toRot; // The maximum rotation of the camera in degrees
     [SerializeField] private float pitch; // The amount to pitch the camera up or down
+
     Quaternion from;
     Quaternion to;
     private bool playerInView;

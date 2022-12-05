@@ -17,12 +17,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private Slider wantednessSlider;
     [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private TextMeshProUGUI gameOverState;
     [SerializeField] private TextMeshProUGUI gameOverTip;
     [SerializeField] private TextMeshProUGUI gameOverScore;
     [SerializeField] private float wantednessDecayScale;
     [SerializeField] private float gameFadeoutTime;
+    [SerializeField] private float TimerMinutes = 5f;
+    [SerializeField] private float TimerSeconds = 0f;
     static GameState currentGameState;
     float wantedness;
     int score;
@@ -39,6 +42,19 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (TimerMinutes <= 0 && TimerSeconds <= 0)
+        {
+            currentGameState = GameState.Won;
+        }
+        else if (TimerSeconds <= 0)
+        {
+            TimerMinutes--;
+            TimerSeconds = 59f;
+        }
+        else
+        {
+            TimerSeconds -= Time.deltaTime;
+        }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             PauseGame();
@@ -48,6 +64,15 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(FadeOutGame());
         }
+        if (currentGameState == GameState.Won)
+        {
+            StartCoroutine(FadeOutGame());
+        }
+        
+        
+        
+        timerText.text = TimerMinutes.ToString() + ": " + Mathf.Round(TimerSeconds).ToString();
+        
     }
 
     public void PauseGame()
