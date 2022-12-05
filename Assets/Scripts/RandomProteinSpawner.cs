@@ -20,8 +20,8 @@ public class RandomProteinSpawner : MonoBehaviour
             if (Timer <= 0)
             {
                 GameObject InstantiatedPrefab = Instantiate(Prefab);
+                InstantiatedPrefab.SetActive(true);
                 InstantiatedPrefab.transform.position = transforms[Random.Range(0, transforms.Length)].position;
-                Debug.Log(InstantiatedPrefab.transform.position);
                 proteinNotSpawned = false;
                 Timer = Random.Range(minSpawnTime, maxSpawnTime);
             }
