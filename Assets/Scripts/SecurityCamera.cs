@@ -50,7 +50,10 @@ public class SecurityCamera : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            playerInView = true;
+            if (Physics.Raycast(transform.position, other.transform.position - transform.position, out _))
+            {
+                playerInView = true;
+            }
         }
     }
     private void OnTriggerExit(Collider other)
@@ -70,7 +73,6 @@ public class SecurityCamera : MonoBehaviour
 
     void CatchPlayer()
     {
-        Debug.Log("caught player");
         timePlayerIsInView = 0f;
         GameObject.Find("GameManager").GetComponent<GameManager>().ChangeWantedness(wantednessIncrease);
     }
