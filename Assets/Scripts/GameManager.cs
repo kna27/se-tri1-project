@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
 
     public void ChangeWantedness(float changeAmount)
     {
-        wantedness = Mathf.Clamp(wantedness + changeAmount, 0, 100f);
+        wantedness = WantednessCalculations.AddWantedness(wantedness, changeAmount);
         wantednessSlider.value = wantedness;
         if (wantedness == 100f)
         {
