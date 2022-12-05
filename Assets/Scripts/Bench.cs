@@ -8,11 +8,13 @@ public class Bench : Interactable
     [SerializeField] private GameObject[] leftPlates;
     [SerializeField] private GameObject[] rightPlates;
     [SerializeField] private Transform playerAnchor;
+    Animator anim;
     Transform oldPlayerPos;
     GameObject player;
 
     void Start()
     {
+        anim = GetComponent<Animator>();
         player = GameObject.Find("Player");
     }
 
@@ -31,12 +33,31 @@ public class Bench : Interactable
         player.GetComponent<Player>().movementEnabled = false;
         player.GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Collider>().enabled = false;
+        float scale = 1f;
+        switch (currentWeight)
+        {
+            case 1:
+                scale = 0.5f;
+                break;
+            case 2:
+                scale = 0.33f;
+                break;
+            case 3:
+                scale = 0.25f;
+                break;
+            default:
+                scale = 1f;
+                break;
+        }
+        anim.speed = scale;
+        anim.Play("Bench");
         StartCoroutine(BenchAnim());
     }
 
     IEnumerator BenchAnim()
     {
-        yield return new WaitForSeconds(1 + currentWeight * 1.5f);
+        yield return new WaitForSeconds(2 + currentWeight * 2f);
+        anim.Play("Default");
         GameObject.Find("GameManager").GetComponent<GameManager>().AddScore(45 + currentWeight * 90);
         player.transform.SetParent(null);
         player.transform.SetPositionAndRotation(oldPlayerPos.position, oldPlayerPos.rotation);
