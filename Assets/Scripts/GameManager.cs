@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float gameFadeoutTime;
     [SerializeField] private float TimerMinutes = 5f;
     [SerializeField] private float TimerSeconds = 0f;
+    [SerializeField] private string addZero = "";
     static GameState currentGameState;
     float wantedness;
     int score;
@@ -42,10 +43,12 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        
         if (TimerMinutes <= 0 && TimerSeconds <= 0)
         {
             currentGameState = GameState.Won;
         }
+        
         else if (TimerSeconds <= 0)
         {
             TimerMinutes--;
@@ -54,6 +57,14 @@ public class GameManager : MonoBehaviour
         else
         {
             TimerSeconds -= Time.deltaTime;
+        }
+        if (TimerSeconds <= 9.5)
+        {
+            addZero = "0";
+        }
+        else
+        {
+            addZero = "";
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -71,7 +82,7 @@ public class GameManager : MonoBehaviour
         
         
         
-        timerText.text = TimerMinutes.ToString() + ": " + Mathf.Round(TimerSeconds).ToString();
+        timerText.text = TimerMinutes.ToString() + ": " + addZero + Mathf.Round(TimerSeconds).ToString();
         
     }
 
