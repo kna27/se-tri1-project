@@ -58,14 +58,7 @@ public class GameManager : MonoBehaviour
         {
             TimerSeconds -= Time.deltaTime;
         }
-        if (TimerSeconds <= 9.5)
-        {
-            addZero = "0";
-        }
-        else
-        {
-            addZero = "";
-        }
+        
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             PauseGame();
@@ -82,7 +75,7 @@ public class GameManager : MonoBehaviour
         
         
         
-        timerText.text = TimerMinutes.ToString() + ": " + addZero + Mathf.Round(TimerSeconds).ToString();
+        timerText.text = TimeFormat.FormatTime(TimerMinutes, TimerSeconds);
         
     }
 
