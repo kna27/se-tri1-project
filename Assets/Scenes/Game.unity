@@ -5473,7 +5473,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh43588
+  m_Name: pb_Mesh24090
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -11844,7 +11844,7 @@ MonoBehaviour:
   wantednessDecayScale: -0.25
   gameFadeoutTime: 0.5
   TimerMinutes: 2
-  TimerSeconds: 20
+  TimerSeconds: 0
 --- !u!114 &2061405449
 MonoBehaviour:
   m_ObjectHideFlags: 0
