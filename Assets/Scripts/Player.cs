@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     Rigidbody rb;
     float interactKeyHeldTime;
 
-    [SerializeField] private float sensitivity;
+    float sensitivity;
     float xRotation;
     float yRotation;
     float mouseX;
@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     Outline[] outlineObjs;
     void Start()
     {
+        sensitivity = PlayerPrefs.GetFloat("sensitivity", 200f);
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
