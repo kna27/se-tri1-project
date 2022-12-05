@@ -1,7 +1,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -26,7 +25,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float gameFadeoutTime;
     [SerializeField] private float TimerMinutes = 5f;
     [SerializeField] private float TimerSeconds = 0f;
-    [SerializeField] private string addZero = "";
     static GameState currentGameState;
     float wantedness;
     int score;

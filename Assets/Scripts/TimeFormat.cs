@@ -4,7 +4,7 @@ public class TimeFormat
 {
     public static string FormatTime(float minutes, float seconds)
     {
-        string addZero = "";
+        string addZero;
         if (seconds <= 9.5)
         {
             addZero = "0";
@@ -13,6 +13,6 @@ public class TimeFormat
         {
             addZero = "";
         }
-        return minutes.ToString() + ": " + addZero + Mathf.Round(seconds).ToString();
+        return minutes.ToString() + ":" + addZero + Mathf.Round(seconds).ToString();
     }
 }
